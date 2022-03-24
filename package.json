@@ -4,30 +4,26 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@cloudflare/wrangler": "^1.19.0",
-    "concurrently": "^5.3.0",
-    "date-fns": "^2.16.1",
-    "esbuild": "^0.12.20",
+    "concurrently": "^7.0.0",
+    "date-fns": "^2.28.0",
     "excerpts": "^0.0.3",
-    "fs-extra": "^10.0.0",
-    "itty-router": "^2.4.2",
-    "marked": "^1.2.5",
+    "fs-extra": "^10.0.1",
+    "itty-router": "^2.6.0",
+    "marked": "^4.0.12",
     "mkdirp": "^1.0.4",
-    "nodemon": "^2.0.6",
-    "object-assign": "^4.1.1",
-    "resolve": "1.12.0",
+    "react": "^0.0.0-experimental-3f8990898-20220323",
+    "react-dom": "^0.0.0-experimental-3f8990898-20220323",
+    "react-server-dom-webpack": "^0.0.0-experimental-3f8990898-20220323",
     "rimraf": "^3.0.2",
-    "sanitize-html": "^2.2.0",
-    "serve": "^12.0.0",
-    "source-map-explorer": "^2.5.2"
+    "sanitize-html": "^2.7.0",
+    "wrangler": "^0.0.23"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
-    "prettier": "1.19.1"
+    "prettier": "2.6.0",
+    "source-map-explorer": "^2.5.2"
   },
   "scripts": {
-    "build": "node scripts/build.js",
-    "build:prod": "NODE_ENV=production STATIC_ROOT=https://server-components.coolcomputerclub.com node scripts/build.js",
-    "deploy": "wrangler publish --env production"
+    "dev": "npx wrangler dev --experimental-public dist",    
+    "deploy": "NODE_ENV=production wrangler publish --experimental-public dist --env production"
   }
 }

@@ -22,7 +22,7 @@ export default function App({selectedId, isEditing, searchText}) {
         <section className="sidebar-header">
           <img
             className="logo"
-            src={`${STATIC_ROOT}/logo.svg`}
+            src="/logo.svg"
             width="22px"
             height="20px"
             alt=""

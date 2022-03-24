@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-
-import marked from 'marked';
 import sanitizeHtml from 'sanitize-html';
+import {marked} from 'marked';
 
 const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
   'img',

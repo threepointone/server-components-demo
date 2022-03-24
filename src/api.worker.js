@@ -1,15 +1,14 @@
-import {Router} from 'itty-router';
+import itty from 'itty-router';
 import {renderToReadableStream as flightRenderToReadableStream} from 'react-server-dom-webpack/writer.browser.server';
 import React from 'react';
-import ReactApp from '../src/App.server';
-import * as simple from '../src/simple-notes-db';
-// import html from '../public/index.html';
+import ReactApp from './App.server';
+import * as simple from './simple-notes-db';
 import {renderToReadableStream as fizzRenderToReadableStream} from 'react-dom/server.browser';
-import Html from '../src/Html';
+import Html from './Html';
 
 import manifest from '../dist/react-client-manifest.json';
 // create a router
-const app = Router();
+const app = itty.Router();
 
 function onError(error) {
   console.error(error.message);
@@ -25,8 +24,25 @@ function sleep(n) {
 
 // home page html
 app.get('/', async () => {
-  const stream = fizzRenderToReadableStream(<Html />);
-  return new Response(stream);
+  let controller = new AbortController();
+  try {
+    const stream = await fizzRenderToReadableStream(<Html />, {
+      signal: controller.signal,
+    });
+    await stream.allReady;
+    return new Response(stream, {
+      headers: {'Content-Type': 'text/html'},
+    });
+  } catch (err) {
+    console.error('Server error:', err);
+    return new Response(
+      '<!doctype html><p>Loading...</p><script src="/index.js"></script>',
+      {
+        status: 500,
+        headers: {'Content-Type': 'text/html'},
+      }
+    );
+  }
 });
 
 async function sendResponse(req, redirectToId) {
@@ -102,7 +118,7 @@ app.get('/notes/:id', async (req) => {
   });
 });
 
-app.get('/sleep/:ms', async function(req) {
+app.get('/sleep/:ms', async function (req) {
   await sleep(req.params.ms);
   return new Response(JSON.stringify({ok: true}), {
     headers: {

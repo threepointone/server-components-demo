@@ -9,7 +9,7 @@ export default function Html() {
         />
         <meta name="description" content="React with Server Components demo" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href={`${STATIC_ROOT}/style.css`} />
+        <link rel="stylesheet" href="/style.css" />
         <title>React Notes</title>
       </head>
       <body>
@@ -28,8 +28,9 @@ export default function Html() {
             const __esbuild__module_map__ = new Map();
       
             // we just use webpack's function names to avoid forking react
+            const ROOT = "http://localhost:8787/"
             global.__webpack_chunk_load__ = async function(moduleId) {
-              const mod = await import(moduleId.replace('./src', "${STATIC_ROOT}"));
+              const mod = await import(moduleId.replace('./src', '//' + window.location.host));
               __esbuild__module_map__.set(moduleId, mod);
               return mod;
             };
@@ -57,7 +58,7 @@ export default function Html() {
             `,
           }}
         />
-        <script src={`${STATIC_ROOT}/index.client.js`} type="module" />
+        <script src="/index.client.js" type="module" />
       </body>
     </html>
   );

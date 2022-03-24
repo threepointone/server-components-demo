@@ -97,7 +97,7 @@ export default function NoteEditor({noteId, initialTitle, initialBody}) {
             onClick={() => handleSave()}
             role="menuitem">
             <img
-              src={`${STATIC_ROOT}/checkmark.svg`}
+              src="/checkmark.svg"
               width="14px"
               height="10px"
               alt=""
@@ -112,7 +112,7 @@ export default function NoteEditor({noteId, initialTitle, initialBody}) {
               onClick={() => handleDelete()}
               role="menuitem">
               <img
-                src={`${STATIC_ROOT}/cross.svg`}
+                src="/cross.svg"
                 width="10px"
                 height="10px"
                 alt=""

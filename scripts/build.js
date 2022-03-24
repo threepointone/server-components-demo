@@ -8,15 +8,13 @@ const mkdirp = require('mkdirp');
 const fse = require('fs-extra');
 
 rimraf.sync('dist');
-rimraf.sync('out');
+// rimraf.sync('out');
 
 const entryPoints = child_process
   .execSync('find src | grep .client.js')
   .toString()
   .split('\n')
   .filter(Boolean);
-
-const STATIC_ROOT = process.env.STATIC_ROOT || 'http://localhost:5000';
 
 const environment = process.env.NODE_ENV || 'development';
 
@@ -51,7 +49,6 @@ async function run() {
   );
 
   const client = await esbuild.build({
-    publicPath: STATIC_ROOT,
     entryPoints,
     platform: 'browser',
     sourcemap: true,
@@ -68,10 +65,8 @@ async function run() {
     inject: ['./src/react-shim.js'],
     minify: environment === 'production',
     define: {
-      STATIC_ROOT: `"${STATIC_ROOT}"`,
       'process.env.NODE_ENV': `"${environment}"`,
     },
-    nodePaths: ['vendor'],
     plugins: [
       {
         name: 'react-flight-client',
@@ -92,15 +87,12 @@ async function run() {
   const {outputs} = client.metafile;
 
   const server = await esbuild.build({
-    entryPoints: ['./server/api.worker.js'],
-    // platform: 'node',
+    entryPoints: ['./src/api.worker.js'],
     sourcemap: true,
-    // sourcesContent: true,
     bundle: true,
     metafile: true,
-    // outdir: 'out',
     format: 'esm',
-    outfile: './out/worker.mjs',
+    outfile: './out/worker.js',
     loader: {
       '.js': 'jsx',
       '.html': 'text',
@@ -108,16 +100,9 @@ async function run() {
     conditions: ['react-server'],
     inject: ['./src/react-shim.js'],
     minify: environment === 'production',
-    // minify: true, //environment === 'production',
-
-    // define: {
-    //   'process.env.NODE_ENV': `"production"`,
-    // },
     define: {
-      STATIC_ROOT: `"${STATIC_ROOT}"`,
       'process.env.NODE_ENV': `"${environment}"`,
     },
-    nodePaths: ['vendor'],
     plugins: [
       {
         name: 'react-flight-server',
@@ -148,16 +133,6 @@ async function run() {
           });
         },
       },
-      // {
-      //   name: 'make-all-packages-external',
-      //   setup(build) {
-      //     let filter = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/; // Must not start with "/" or "./" or "../"
-      //     build.onResolve({filter}, (args) => ({
-      //       path: args.path,
-      //       external: true,
-      //     }));
-      //   },
-      // },
     ],
   });
 }
